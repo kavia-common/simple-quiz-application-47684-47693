@@ -1,5 +1,4 @@
 import Blits from '@lightningjs/blits'
-import { OceanTheme as T } from '../theme.js'
 
 export default Blits.Component('Results', {
   template: `
@@ -9,18 +8,16 @@ export default Blits.Component('Results', {
         <Text x="120" y="60" mount="y:1" size="48" color="#2563EB" content="Ocean Quiz" />
       </Element>
 
-      <!-- Center block -->
       <Element x="360" y="240" w="1200" h="680" color="#ffffff">
-        <Text x="80" y="140" size="48" color="#111827" content="Your Results" />
+        <Text x="80" y="140" size="48" color="#111827" content="Results" />
         <Text x="80" y="220" size="36" color="#6B7280" :content="$scoreText" />
+        <Text x="80" y="280" size="28" color="#111827" :content="$messageText" />
 
-        <!-- Restart button -->
-        <Element x="80" y="340" w="320" h="84" :color="$buttonBg">
-          <Text x="24" y="42" mount="y:0.5" size="32" :color="$buttonFg" content="Restart Quiz" />
+        <Element x="80" y="360" w="320" h="84" color="#2563EB">
+          <Text x="24" y="42" mount="y:0.5" size="32" color="#ffffff" content="Restart" />
         </Element>
 
-        <Text x="80" y="460" size="26" color="#6B7280"
-          content="Press Enter to restart. Up/Down/Enter supported throughout the quiz." />
+        <Text x="80" y="470" size="24" color="#6B7280" content="Press Enter to restart or Back for Intro." />
       </Element>
     </Element>
   `,
@@ -34,28 +31,29 @@ export default Blits.Component('Results', {
     scoreText() {
       return 'Score: ' + this.score + ' / ' + this.total
     },
-    buttonBg() {
-      // Static colors to avoid inline template expressions
-      return T && T.colors && T.colors.primary ? T.colors.primary : '#2563EB'
-    },
-    buttonFg() {
-      return T && T.colors && T.colors.surface ? T.colors.surface : '#ffffff'
+    messageText() {
+      const s = Number(this.score)
+      const t = Number(this.total)
+      if (t <= 0) return 'Thanks for playing!'
+      const ratio = t ? s / t : 0
+      if (ratio >= 0.8) return 'Great job!'
+      if (ratio >= 0.5) return 'Nice effort!'
+      return 'Keep practicing!'
     },
   },
   hooks: {
     ready() {
-      // Obtain params from router query, fallback to localStorage for score if needed
+      // Read score & total from router query or localStorage fallback
       const query = (this.$router && this.$router.current && this.$router.current.query) ? this.$router.current.query : ''
       const params = new URLSearchParams(query || '')
       const scoreParam = params.get('score')
       const totalParam = params.get('total')
-
       const storedScore = Number(localStorage.getItem('quiz_score') || 0)
 
       this.score = (scoreParam !== null ? Number(scoreParam) : storedScore) || 0
       this.total = (totalParam !== null ? Number(totalParam) : 0)
 
-      // Reset stored score for next run
+      // Reset stored score for the next run
       localStorage.setItem('quiz_score', '0')
     },
   },
