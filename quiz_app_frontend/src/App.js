@@ -12,8 +12,6 @@ import theme from './theme.js'
 export default Blits.App({
   template: `
     <Element w="100%" h="100%" color="{bg}" alpha="1">
-      <!-- Temporary debug overlay to confirm draw -->
-      <Text content="{hello}" x="20" y="20" color="#ffffff" fontSize="22" />
       <Router />
     </Element>
   `,
@@ -21,7 +19,6 @@ export default Blits.App({
   state() {
     return {
       bg: theme.background,
-      hello: 'Hello',
     }
   },
 
@@ -33,7 +30,6 @@ export default Blits.App({
           { path: '/quiz', component: Quiz },
           { path: '/results', component: Results },
         ],
-        // Ensure navigation starts at Intro
         initial: '/',
       }),
     }
