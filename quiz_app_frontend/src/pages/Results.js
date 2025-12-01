@@ -7,7 +7,7 @@ import Button from '../components/Button.js'
  */
 export default Blits.Component({
   template: `
-    <Element w="100%" h="100%" color="{bg}">
+    <Element w="100%" h="100%" color="{bg}" alpha="1">
       <Text content="{title}" x="{titleX}" y="{titleY}" color="{titleColor}" fontSize="{titleSize}" />
       <Text content="{scoreText}" x="{scoreX}" y="{scoreY}" color="{titleColor}" fontSize="{scoreSize}" />
       <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{btnLabel}" />

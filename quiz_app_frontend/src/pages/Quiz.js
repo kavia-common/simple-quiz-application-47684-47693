@@ -9,7 +9,7 @@ import Button from '../components/Button.js'
  */
 export default Blits.Component({
   template: `
-    <Element w="100%" h="100%" color="{bg}">
+    <Element w="100%" h="100%" color="{bg}" alpha="1">
       <Text content="{questionText}" x="{qX}" y="{qY}" color="{titleColor}" fontSize="{qSize}" />
 
       <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}">

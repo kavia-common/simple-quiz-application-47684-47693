@@ -8,8 +8,8 @@ import theme from '../theme.js'
  */
 export default Blits.Component({
   template: `
-    <Element w="100%" h="100%" color="{bg}">
-      <Element w="100%" h="{headerH}" y="{headerY}">
+    <Element w="100%" h="100%" color="{bg}" alpha="1">
+      <Element w="100%" h="{headerH}" y="{headerY}" alpha="1">
         <Text content="{appTitle}" x="{headerX}" y="{headerTextY}" color="{titleColor}" fontSize="{titleSize}" />
       </Element>
 
