@@ -25,7 +25,7 @@ export default Blits.Component({
           <Text content="{opt4}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
         </Element>
       </Element>
-      <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{nextLabel}" />
+      <Button ref="nextBtn" x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{nextLabel}" />
     </Element>
   `,
   state() {
@@ -107,7 +107,7 @@ export default Blits.Component({
     this.methods.load()
   },
   onReady() {
-    const btn = this.$child('Button')
+    const btn = this.$ref('nextBtn')
     if (btn) {
       btn.props.onPress = this.methods.next
     }

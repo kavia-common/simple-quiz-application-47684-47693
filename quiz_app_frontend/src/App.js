@@ -4,13 +4,14 @@ import Quiz from './pages/Quiz.js'
 import Results from './pages/Results.js'
 import theme from './theme.js'
 
-// PUBLIC_INTERFACE
-/**
- * Root App component:
- * - Renders a visible background
- * - Mounts the Router as a child component with Intro as the initial route
- * - Uses only state bindings in template (precompiler-safe)
- */
+/* PUBLIC_INTERFACE
+Root App component entrypoint.
+
+This component sets up the global background and mounts the Router above it.
+
+Parameters: none (Blits root app)
+Returns: A Blits App component which renders a solid background and the Router with initial route '/'
+*/
 export default Blits.App({
   template: `
     <Element w="1280" h="720" color="{bg}" alpha="1">
