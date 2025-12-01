@@ -5,7 +5,9 @@ import theme from '../theme.js'
 
 /**
  * Intro Page: Shows title, a welcome card, and a Start button to navigate to /quiz.
+ * Ensures explicit sizing and alpha for stable first render.
  */
+// PUBLIC_INTERFACE
 export default Blits.Component({
   template: `
     <Element w="100%" h="100%" color="{bg}" alpha="1">
@@ -53,8 +55,13 @@ export default Blits.Component({
   },
 
   onReady() {
-    const btn = this.$child('Button')
-    if (btn) {
+    // Attempt to get Button via key, fallback to positional search
+    let btn = this.$child('Button')
+    if (!btn) {
+      // Fallback: pages structure -> [Header Element, Card, Button] => index 2
+      btn = this.$childAt && this.$childAt(2)
+    }
+    if (btn && btn.props) {
       btn.props.onPress = () => {
         const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
         if (r && r.navigate) {

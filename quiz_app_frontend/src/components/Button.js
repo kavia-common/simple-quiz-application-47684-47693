@@ -1,8 +1,8 @@
 import Blits from '@lightningjs/blits'
 import theme from '../theme.js'
 
+// PUBLIC_INTERFACE
 /**
- * PUBLIC_INTERFACE
  * Button: focusable rectangle with a text label.
  * Props are copied into state during onInit to keep template bindings simple.
  */

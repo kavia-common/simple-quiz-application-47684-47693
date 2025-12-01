@@ -8,6 +8,7 @@ import theme from './theme.js'
  * Root App: wraps Router inside a full-screen Element.
  * Template bindings are limited to $state references and literals to be precompiler-safe.
  */
+// PUBLIC_INTERFACE
 export default Blits.App({
   template: `
     <Element w="100%" h="100%" color="{bg}" alpha="1">

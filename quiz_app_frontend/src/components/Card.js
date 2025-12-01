@@ -1,8 +1,8 @@
 import Blits from '@lightningjs/blits'
 import theme from '../theme.js'
 
+// PUBLIC_INTERFACE
 /**
- * PUBLIC_INTERFACE
  * Card: simple surface with title and body text.
  */
 export default Blits.Component({
