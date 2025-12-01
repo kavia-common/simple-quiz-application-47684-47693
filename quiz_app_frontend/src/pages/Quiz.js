@@ -1,5 +1,4 @@
 import Blits from '@lightningjs/blits'
-import { OceanTheme as T } from '../theme.js'
 import Card from '../components/Card.js'
 import Loader from '../components/Loader.js'
 import { getQuestions } from '../quizData.js'
@@ -8,24 +7,24 @@ export default Blits.Component('Quiz', {
   components: { Card, Loader },
   template: `
     <Element w="1920" h="1080">
-      <Element w="1920" h="1080" color="${T.colors.background}" />
+      <Element w="1920" h="1080" color="#f9fafb" />
       <Element w="1920" h="120">
-        <Text x="120" y="60" mount="y:1" size="48" color="${T.colors.primary}" content="Ocean Quiz" />
+        <Text x="120" y="60" mount="y:1" size="48" color="#2563EB" content="Ocean Quiz" />
       </Element>
 
       <Card>
         <Element>
           <!-- Loading -->
           <Element x="80" y="120" :alpha="$loadingAlpha">
-            <Text size="40" color="${T.colors.text}" content="Loading questions..." />
+            <Text size="40" color="#111827" content="Loading questions..." />
             <Loader x="0" y="80" />
           </Element>
 
           <!-- Quiz content -->
           <Element :alpha="$contentAlpha">
-            <Text x="80" y="80" size="28" color="${T.colors.muted}" :content="$progressText" />
+            <Text x="80" y="80" size="28" color="#6B7280" :content="$progressText" />
 
-            <Text x="80" y="140" size="42" color="${T.colors.text}" maxwidth="1040" :content="$questionText" />
+            <Text x="80" y="140" size="42" color="#111827" maxwidth="1040" :content="$questionText" />
 
             <!-- Options (explicit rows to avoid complex v-for patterns) -->
             <Element x="80" y="240">
@@ -130,16 +129,16 @@ export default Blits.Component('Quiz', {
       return this.selectedIndex === null ? 0.5 : 1
     },
     ctaBg() {
-      return this.selectedIndex === null ? T.colors.text + '1A' : T.colors.primary
+      return this.selectedIndex === null ? '#1118271A' : '#2563EB'
     },
     ctaFg() {
-      return this.selectedIndex === null ? T.colors.text : T.colors.surface
+      return this.selectedIndex === null ? '#111827' : '#ffffff'
     },
     feedbackAlpha() {
       return this.showFeedback ? 1 : 0
     },
     feedbackColor() {
-      return this.isCorrect ? T.colors.success : T.colors.error
+      return this.isCorrect ? '#F59E0B' : '#EF4444'
     },
     feedbackText() {
       return this.isCorrect ? 'Correct!' : 'Not quite. Keep going!'
@@ -217,20 +216,20 @@ export default Blits.Component('Quiz', {
       const sel = this.selectedIndex
       const show = this.showFeedback
       if (sel === i && show) {
-        return this.isCorrect ? T.colors.success : T.colors.error
+        return this.isCorrect ? '#F59E0B' : '#EF4444'
       } else if (sel === i) {
-        return T.colors.primary + '33'
+        return '#2563EB33'
       }
-      return T.colors.text + '0D'
+      return '#1118270D'
     },
     _fgFor(i) {
       if (i >= this.options.length) return 'transparent'
       const sel = this.selectedIndex
       const show = this.showFeedback
       if (sel === i && show) {
-        return T.colors.surface
+        return '#ffffff'
       }
-      return T.colors.text
+      return '#111827'
     },
     evaluateSelection() {
       if (this.selectedIndex === null || !this.currentQuestion) return

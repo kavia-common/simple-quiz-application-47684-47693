@@ -1,5 +1,4 @@
 import Blits from '@lightningjs/blits'
-import { OceanTheme as T } from '../theme.js'
 
 export default Blits.Component('Card', {
   template: `
@@ -8,8 +7,8 @@ export default Blits.Component('Card', {
       :h="$h"
       :x="$x"
       :y="$y"
-      :effects="[$shader('radius', {radius: ${T.radius.lg}}), $shader('shadow', {x:0, y:6, blur:24, spread:0, color:'#00000026'})]"
-      color="${T.colors.surface}"
+      :effects="$effects"
+      color="#ffffff"
     >
       <Element :x="0" :y="0">
         <slot />
@@ -22,6 +21,15 @@ export default Blits.Component('Card', {
       h: 680,
       x: (1920 - 1200) / 2,
       y: (1080 - 680) / 2,
+      effects: [],
     }
+  },
+  hooks: {
+    ready() {
+      // Create effects in code, not inline in template, to avoid precompiler issues
+      const r = this.$shader('radius', { radius: 16 })
+      const s = this.$shader('shadow', { x: 0, y: 6, blur: 24, spread: 0, color: '#00000026' })
+      this.effects = [r, s]
+    },
   },
 })
