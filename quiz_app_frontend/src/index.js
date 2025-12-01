@@ -7,6 +7,18 @@ import App from './App.js'
  */
 // PUBLIC_INTERFACE
 function boot() {
+  // Register a default font family (system sans) to ensure Text nodes render reliably.
+  // If custom fonts are needed, they can be added via Blits.fonts.register.
+  if (Blits && Blits.fonts && typeof Blits.fonts.register === 'function') {
+    try {
+      Blits.fonts.register('Default', { family: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial' })
+      Blits.fonts.default = 'Default'
+    } catch (e) {
+      // non-fatal
+      console.warn('Font registration skipped:', e)
+    }
+  }
+
   Blits.start(App, {
     w: 1280,
     h: 720,
