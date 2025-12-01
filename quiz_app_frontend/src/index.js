@@ -11,7 +11,10 @@ function boot() {
   // If custom fonts are needed, they can be added via Blits.fonts.register.
   if (Blits && Blits.fonts && typeof Blits.fonts.register === 'function') {
     try {
-      Blits.fonts.register('Default', { family: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial' })
+      Blits.fonts.register('Default', {
+        family:
+          'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial',
+      })
       Blits.fonts.default = 'Default'
     } catch (e) {
       // non-fatal
@@ -30,4 +33,9 @@ function boot() {
   })
 }
 
-boot()
+// Start after DOM is ready, or immediately if already loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => boot())
+} else {
+  boot()
+}

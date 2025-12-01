@@ -11,20 +11,20 @@ import theme from '../theme.js'
 // PUBLIC_INTERFACE
 export default Blits.Component({
   template: `
-    <Element w="100%" h="100%" color="{bg}" alpha="1">
+    <Element w="100%" h="100%" color="{bg}" alpha="1" focusable="false">
       <!-- Center container with subtle surface card for contrast -->
-      <Element x="{centerX}" y="{centerY}" w="{centerW}" h="{centerH}" color="{cardBg}" radius="{cardRadius}" alpha="1">
+      <Element x="{centerX}" y="{centerY}" w="{centerW}" h="{centerH}" color="{cardBg}" radius="{cardRadius}" alpha="1" focusable="false">
         <Text content="{title}" x="{titleX}" y="{titleY}" color="{titleColor}" fontSize="{titleSize}" />
         <Text content="{subtitle}" x="{subX}" y="{subY}" color="{subColor}" fontSize="{subSize}" />
 
         <!-- Buttons row -->
-        <Element x="{rowX}" y="{rowY}" w="{rowW}" h="{rowH}" alpha="1">
-          <Button x="{startX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{startLabel}" />
-          <Button x="{helpX}"  y="{btnY}" width="{btnW}" height="{btnH}" label="{helpLabel}" />
+        <Element x="{rowX}" y="{rowY}" w="{rowW}" h="{rowH}" alpha="1" focusable="false">
+          <Button ref="start" x="{startX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{startLabel}" />
+          <Button ref="help"  x="{helpX}"  y="{btnY}" width="{btnW}" height="{btnH}" label="{helpLabel}" />
         </Element>
 
         <!-- Help tooltip -->
-        <Element x="{tipX}" y="{tipY}" w="{tipW}" h="{tipH}" color="{tipBg}" alpha="{tipAlpha}" radius="{tipRadius}">
+        <Element x="{tipX}" y="{tipY}" w="{tipW}" h="{tipH}" color="{tipBg}" alpha="{tipAlpha}" radius="{tipRadius}" focusable="false">
           <Text content="{tipText}" x="{tipTx}" y="{tipTy}" color="{tipFg}" fontSize="{tipSize}" />
         </Element>
       </Element>
@@ -32,15 +32,20 @@ export default Blits.Component({
   `,
 
   state() {
+    // Center math for 1280x720; keep explicit sizes and non-zero fonts
+    const centerW = 900
+    const centerH = 420
+    const centerX = Math.round((1280 - centerW) / 2)
+    const centerY = Math.round((720 - centerH) / 2)
     return {
       // screen background
       bg: theme.background,
 
-      // center container (explicit dimension; centered for 1280x720)
-      centerW: 900,
-      centerH: 420,
-      centerX: 190,
-      centerY: 150,
+      // center container
+      centerW,
+      centerH,
+      centerX,
+      centerY,
       cardBg: '#ffffff',
       cardRadius: 16,
 
@@ -90,42 +95,23 @@ export default Blits.Component({
   },
 
   onReady() {
-    // children: [card]
-    const card = this.$childAt(0)
-    if (!card) return
+    const startBtn = this.$ref('start')
+    const helpBtn = this.$ref('help')
 
-    // card children: [title, subtitle, row, tooltip]
-    const row = card.childAt && card.childAt(2)
-    const tooltip = card.childAt && card.childAt(3)
-
-    // row children: [startBtn, helpBtn]
-    const startBtn = row && row.childAt ? row.childAt(0) : null
-    const helpBtn = row && row.childAt ? row.childAt(1) : null
-
-    if (startBtn && startBtn.props) {
+    if (startBtn) {
       startBtn.props.onPress = () => {
         const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
-        if (r && r.navigate) {
-          r.navigate('/quiz')
-        }
+        if (r && r.navigate) r.navigate('/quiz')
       }
     }
-
-    if (helpBtn && helpBtn.props) {
+    if (helpBtn) {
       helpBtn.props.onPress = () => {
-        // If there is a /help route, navigate, otherwise show tooltip
         const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
-        let didRoute = false
         if (r && r.navigate && r.has && r.has('/help')) {
           r.navigate('/help')
-          didRoute = true
-        }
-        if (!didRoute && tooltip) {
-          // show tooltip briefly
+        } else {
           this.$state.tipAlpha = 1
-          setTimeout(() => {
-            this.$state.tipAlpha = 0
-          }, 2000)
+          setTimeout(() => (this.$state.tipAlpha = 0), 2000)
         }
       }
     }

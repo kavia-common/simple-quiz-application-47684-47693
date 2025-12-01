@@ -50,4 +50,11 @@ export default Blits.Component({
       fn()
     }
   },
+
+  onClick() {
+    const fn = this.$state.cb
+    if (fn) {
+      fn()
+    }
+  },
 })
