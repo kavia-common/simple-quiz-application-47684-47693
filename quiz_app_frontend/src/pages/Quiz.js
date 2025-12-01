@@ -1,284 +1,143 @@
 import Blits from '@lightningjs/blits'
-import Card from '../components/Card.js'
-import Loader from '../components/Loader.js'
-import { getQuestions } from '../quizData.js'
+import theme from '../theme.js'
+import quiz from '../quizData.js'
+import Button from '../components/Button.js'
 
-export default Blits.Component('Quiz', {
-  components: { Card, Loader },
+/**
+ * Quiz Page: Displays one question with 4 options. Selection highlights the row.
+ * Next advances questions, then navigates to Results with score in route state.
+ */
+export default Blits.Component({
   template: `
-    <Element w="1920" h="1080">
-      <Element w="1920" h="1080" color="#f9fafb" />
-      <Element w="1920" h="120">
-        <Text x="120" y="60" mount="y:1" size="48" color="#2563EB" content="Ocean Quiz" />
+    <Element w="100%" h="100%" color="{bg}">
+      <Text content="{questionText}" x="{qX}" y="{qY}" color="{titleColor}" fontSize="{qSize}" />
+
+      <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}">
+        <Element y="{row0Y}" w="{listW}" h="{rowH}" color="{opt1Bg}" focusable="true">
+          <Text content="{opt1}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
+        </Element>
+        <Element y="{row1Y}" w="{listW}" h="{rowH}" color="{opt2Bg}" focusable="true">
+          <Text content="{opt2}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
+        </Element>
+        <Element y="{row2Y}" w="{listW}" h="{rowH}" color="{opt3Bg}" focusable="true">
+          <Text content="{opt3}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
+        </Element>
+        <Element y="{row3Y}" w="{listW}" h="{rowH}" color="{opt4Bg}" focusable="true">
+          <Text content="{opt4}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
+        </Element>
       </Element>
 
-      <Card>
-        <Element>
-          <!-- Loading -->
-          <Element x="80" y="120" :alpha="$loadingAlpha">
-            <Text size="40" color="#111827" content="Loading questions..." />
-            <Loader x="0" y="80" />
-          </Element>
-
-          <!-- Quiz content -->
-          <Element :alpha="$contentAlpha">
-            <Text x="80" y="80" size="28" color="#6B7280" :content="$progressText" />
-
-            <Text x="80" y="140" size="42" color="#111827" maxwidth="1040" :content="$questionText" />
-
-            <!-- Options (explicit rows to avoid complex v-for patterns) -->
-            <Element x="80" y="240">
-              <Element w="1040" h="64" :y="$y1" :effects="$optionEffects" :color="$bg1">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg1" :content="$label1" />
-              </Element>
-              <Element w="1040" h="64" :y="$y2" :effects="$optionEffects" :color="$bg2">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg2" :content="$label2" />
-              </Element>
-              <Element w="1040" h="64" :y="$y3" :effects="$optionEffects" :color="$bg3">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg3" :content="$label3" />
-              </Element>
-              <Element w="1040" h="64" :y="$y4" :effects="$optionEffects" :color="$bg4">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg4" :content="$label4" />
-              </Element>
-              <Element w="1040" h="64" :y="$y5" :effects="$optionEffects" :color="$bg5">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg5" :content="$label5" />
-              </Element>
-              <Element w="1040" h="64" :y="$y6" :effects="$optionEffects" :color="$bg6">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg6" :content="$label6" />
-              </Element>
-              <Element w="1040" h="64" :y="$y7" :effects="$optionEffects" :color="$bg7">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg7" :content="$label7" />
-              </Element>
-              <Element w="1040" h="64" :y="$y8" :effects="$optionEffects" :color="$bg8">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg8" :content="$label8" />
-              </Element>
-              <Element w="1040" h="64" :y="$y9" :effects="$optionEffects" :color="$bg9">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg9" :content="$label9" />
-              </Element>
-              <Element w="1040" h="64" :y="$y10" :effects="$optionEffects" :color="$bg10">
-                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg10" :content="$label10" />
-              </Element>
-            </Element>
-
-            <!-- Next / Submit -->
-            <Element x="80" y="520" w="260" h="80"
-              :effects="$ctaEffects"
-              :alpha="$ctaAlpha"
-              :color="$ctaBg">
-              <Text x="24" y="40" mount="y:0.5" size="32"
-                :color="$ctaFg"
-                :content="$nextText" />
-            </Element>
-
-            <!-- Feedback -->
-            <Text x="360" y="560" :alpha="$feedbackAlpha" size="28"
-              :color="$feedbackColor"
-              :content="$feedbackText" />
-          </Element>
-        </Element>
-      </Card>
+      <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{nextLabel}" />
     </Element>
   `,
+
   state() {
     return {
-      loading: true,
-      questions: [],
-      currentIndex: 0,
-      selectedIndex: null,
-      showFeedback: false,
-      isCorrect: false,
+      // layout
+      qX: 160, qY: 120, qSize: 36,
+      listX: 160, listY: 220, listW: 1000, listH: 320,
+      rowH: 64,
+      row0Y: 0, row1Y: 80, row2Y: 160, row3Y: 240,
+      txtX: 24, txtY: 18, optSize: 24,
+      btnX: 160, btnY: 580, btnW: 200, btnH: 64,
 
-      // pre-defined effect holders to avoid inline arrays/objects
-      optionEffects: [],
-      ctaEffects: [],
+      // theme
+      bg: theme.background,
+      titleColor: theme.text,
+      optColor: theme.text,
+      primary: theme.primary,
+      surface: theme.surface,
+
+      // quiz state
+      idx: 0,
+      selected: -1,
+      score: 0,
+
+      // text
+      questionText: '',
+      opt1: '',
+      opt2: '',
+      opt3: '',
+      opt4: '',
+      nextLabel: 'Next',
+
+      // option backgrounds
+      opt1Bg: theme.surface,
+      opt2Bg: theme.surface,
+      opt3Bg: theme.surface,
+      opt4Bg: theme.surface,
     }
   },
-  computed: {
-    currentQuestion() {
-      return this.questions[this.currentIndex] || null
-    },
-    options() {
-      const q = this.currentQuestion
-      return q && Array.isArray(q.options) ? q.options : []
-    },
-    total() {
-      return this.questions.length
-    },
-    isLast() {
-      return this.currentIndex >= this.total - 1
-    },
-    progressText() {
-      return 'Question ' + (this.currentIndex + 1) + ' / ' + this.total
-    },
-    questionText() {
-      const q = this.currentQuestion
-      return (q && q.question) ? q.question : ''
-    },
-    nextText() {
-      return this.isLast ? 'Submit' : 'Next'
-    },
 
-    // Alpha / CTA / feedback
-    loadingAlpha() {
-      return this.loading ? 1 : 0
-    },
-    contentAlpha() {
-      return this.loading ? 0 : 1
-    },
-    ctaAlpha() {
-      return this.selectedIndex === null ? 0.5 : 1
-    },
-    ctaBg() {
-      return this.selectedIndex === null ? '#1118271A' : '#2563EB'
-    },
-    ctaFg() {
-      return this.selectedIndex === null ? '#111827' : '#ffffff'
-    },
-    feedbackAlpha() {
-      return this.showFeedback ? 1 : 0
-    },
-    feedbackColor() {
-      return this.isCorrect ? '#F59E0B' : '#EF4444'
-    },
-    feedbackText() {
-      return this.isCorrect ? 'Correct!' : 'Not quite. Keep going!'
-    },
-
-    // Option rows (up to 10)
-    y1() { return 0 },
-    y2() { return this.options.length > 1 ? 80 : -9999 },
-    y3() { return this.options.length > 2 ? 160 : -9999 },
-    y4() { return this.options.length > 3 ? 240 : -9999 },
-    y5() { return this.options.length > 4 ? 320 : -9999 },
-    y6() { return this.options.length > 5 ? 400 : -9999 },
-    y7() { return this.options.length > 6 ? 480 : -9999 },
-    y8() { return this.options.length > 7 ? 560 : -9999 },
-    y9() { return this.options.length > 8 ? 640 : -9999 },
-    y10() { return this.options.length > 9 ? 720 : -9999 },
-
-    label1() { return this._labelFor(0) },
-    label2() { return this._labelFor(1) },
-    label3() { return this._labelFor(2) },
-    label4() { return this._labelFor(3) },
-    label5() { return this._labelFor(4) },
-    label6() { return this._labelFor(5) },
-    label7() { return this._labelFor(6) },
-    label8() { return this._labelFor(7) },
-    label9() { return this._labelFor(8) },
-    label10() { return this._labelFor(9) },
-
-    bg1() { return this._bgFor(0) },
-    bg2() { return this._bgFor(1) },
-    bg3() { return this._bgFor(2) },
-    bg4() { return this._bgFor(3) },
-    bg5() { return this._bgFor(4) },
-    bg6() { return this._bgFor(5) },
-    bg7() { return this._bgFor(6) },
-    bg8() { return this._bgFor(7) },
-    bg9() { return this._bgFor(8) },
-    bg10() { return this._bgFor(9) },
-
-    fg1() { return this._fgFor(0) },
-    fg2() { return this._fgFor(1) },
-    fg3() { return this._fgFor(2) },
-    fg4() { return this._fgFor(3) },
-    fg5() { return this._fgFor(4) },
-    fg6() { return this._fgFor(5) },
-    fg7() { return this._fgFor(6) },
-    fg8() { return this._fgFor(7) },
-    fg9() { return this._fgFor(8) },
-    fg10() { return this._fgFor(9) },
+  components() {
+    return { Button }
   },
-  hooks: {
-    async ready() {
-      const list = await getQuestions()
-      this.questions = list.slice(0, 10) // cap at 10
-      this.loading = false
-      this.selectedIndex = null
-      this.showFeedback = false
 
-      // initialize effects once in code, not in template
-      this.optionEffects = [this.$shader('radius', { radius: 12 })]
-      this.ctaEffects = [this.$shader('radius', { radius: 14 })]
-    },
-    focus() {
-      if (this.selectedIndex === null) this.selectedIndex = 0
-    },
-  },
   methods: {
-    _labelFor(i) {
-      const opt = this.options[i]
-      if (typeof opt === 'undefined') return ''
-      return String.fromCharCode(65 + i) + '. ' + String(opt)
+    // PUBLIC_INTERFACE
+    load() {
+      const q = quiz[this.$state.idx]
+      this.$state.questionText = q.question
+      this.$state.opt1 = q.options[0]
+      this.$state.opt2 = q.options[1]
+      this.$state.opt3 = q.options[2]
+      this.$state.opt4 = q.options[3]
+      this.$state.opt1Bg = this.$state.surface
+      this.$state.opt2Bg = this.$state.surface
+      this.$state.opt3Bg = this.$state.surface
+      this.$state.opt4Bg = this.$state.surface
+      this.$state.selected = -1
     },
-    _bgFor(i) {
-      if (i >= this.options.length) return 'transparent'
-      const sel = this.selectedIndex
-      const show = this.showFeedback
-      if (sel === i && show) {
-        return this.isCorrect ? '#F59E0B' : '#EF4444'
-      } else if (sel === i) {
-        return '#2563EB33'
-      }
-      return '#1118270D'
-    },
-    _fgFor(i) {
-      if (i >= this.options.length) return 'transparent'
-      const sel = this.selectedIndex
-      const show = this.showFeedback
-      if (sel === i && show) {
-        return '#ffffff'
-      }
-      return '#111827'
-    },
-    evaluateSelection() {
-      if (this.selectedIndex === null || !this.currentQuestion) return
-      const correctIdx = this.currentQuestion.answerIndex
-      this.isCorrect = Number(this.selectedIndex) === Number(correctIdx)
-      this.showFeedback = true
-    },
-    persistScore(increment) {
-      const key = 'quiz_score'
-      const prev = Number(localStorage.getItem(key) || 0)
-      localStorage.setItem(key, String(prev + (increment ? 1 : 0)))
-    },
-    resetScore() {
-      localStorage.setItem('quiz_score', '0')
-    },
-    navigateNext() {
-      if (this.selectedIndex === null) return
-      this.evaluateSelection()
-      this.persistScore(this.isCorrect)
 
-      this.$setTimeout(() => {
-        if (this.isLast) {
-          const total = this.total
-          const score = Number(localStorage.getItem('quiz_score') || 0)
-          this.$router.to('/results?score=' + score + '&total=' + total)
-          return
+    // PUBLIC_INTERFACE
+    select(i) {
+      this.$state.selected = i
+      const p = this.$state.primary
+      const s = this.$state.surface
+      this.$state.opt1Bg = i === 0 ? p : s
+      this.$state.opt2Bg = i === 1 ? p : s
+      this.$state.opt3Bg = i === 2 ? p : s
+      this.$state.opt4Bg = i === 3 ? p : s
+    },
+
+    // PUBLIC_INTERFACE
+    next() {
+      const current = quiz[this.$state.idx]
+      if (this.$state.selected === current.answerIndex) {
+        this.$state.score = this.$state.score + 1
+      }
+      const nextIdx = this.$state.idx + 1
+      if (nextIdx >= quiz.length) {
+        const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
+        if (r && r.navigate) {
+          r.navigate('/results', { state: { score: this.$state.score, total: quiz.length } })
         }
-        this.currentIndex += 1
-        this.selectedIndex = 0
-        this.showFeedback = false
-      }, 350)
+      } else {
+        this.$state.idx = nextIdx
+        this.methods.load()
+      }
     },
   },
-  input: {
-    up() {
-      if (!this.currentQuestion) return
-      if (this.selectedIndex === null) this.selectedIndex = 0
-      else this.selectedIndex = (this.selectedIndex - 1 + this.options.length) % this.options.length
-    },
-    down() {
-      if (!this.currentQuestion) return
-      if (this.selectedIndex === null) this.selectedIndex = 0
-      else this.selectedIndex = (this.selectedIndex + 1) % this.options.length
-    },
-    enter() {
-      this.navigateNext()
-    },
-    back() {
-      this.$router.to('/')
-    },
+
+  onInit() {
+    this.methods.load()
+  },
+
+  onReady() {
+    const btn = this.$child('Button')
+    if (btn) {
+      btn.props.onPress = this.methods.next
+    }
+    const list = this.$childAt(1)
+    if (list) {
+      const r0 = list.childAt(0)
+      const r1 = list.childAt(1)
+      const r2 = list.childAt(2)
+      const r3 = list.childAt(3)
+      if (r0) r0.onEnter = () => this.methods.select(0)
+      if (r1) r1.onEnter = () => this.methods.select(1)
+      if (r2) r2.onEnter = () => this.methods.select(2)
+      if (r3) r3.onEnter = () => this.methods.select(3)
+    }
   },
 })

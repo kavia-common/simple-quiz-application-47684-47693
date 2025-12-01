@@ -1,29 +1,66 @@
 import Blits from '@lightningjs/blits'
+import Card from '../components/Card.js'
+import Button from '../components/Button.js'
+import theme from '../theme.js'
 
-export default Blits.Component('Intro', {
+/**
+ * Intro Page: Shows title, a welcome card, and a Start button to navigate to /quiz.
+ */
+export default Blits.Component({
   template: `
-    <Element w="1920" h="1080" color="#f9fafb">
-      <Element w="1920" h="120">
-        <Text x="120" y="60" size="48" color="#2563EB" content="Ocean Quiz" />
+    <Element w="100%" h="100%" color="{bg}">
+      <Element w="100%" h="{headerH}" y="{headerY}">
+        <Text content="{appTitle}" x="{headerX}" y="{headerTextY}" color="{titleColor}" fontSize="{titleSize}" />
       </Element>
 
-      <Element x="360" y="240" w="1200" h="680" color="#ffffff">
-        <Text x="80" y="120" size="56" color="#111827" content="Welcome to the Ocean Quiz" />
-        <Text x="80" y="200" size="30" color="#6B7280" maxwidth="1040"
-          content="Test your knowledge with a quick multiple-choice quiz. Use Up/Down to navigate, Enter to select." />
+      <Card x="{cardX}" y="{cardY}" width="{cardW}" height="{cardH}" title="{cardTitle}" body="{cardBody}" />
 
-        <Element x="80" y="360" w="440" h="96" color="#2563EB">
-          <Text x="32" y="52" size="36" color="#ffffff" content="Start Quiz" />
-        </Element>
-
-        <Text x="80" y="500" size="26" color="#6B7280"
-          content="Tip: Configure VITE_API_BASE or VITE_BACKEND_URL to load questions from /api/quiz."/>
-      </Element>
+      <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{btnLabel}" />
     </Element>
   `,
-  input: {
-    enter() {
-      this.$router.to('/quiz')
-    },
+
+  state() {
+    return {
+      // layout
+      headerH: 80,
+      headerY: 24,
+      headerX: 64,
+      headerTextY: 16,
+      cardX: 160,
+      cardY: 180,
+      cardW: 1000,
+      cardH: 360,
+      btnX: 160,
+      btnY: 580,
+      btnW: 260,
+      btnH: 64,
+      titleSize: 40,
+
+      // colors
+      bg: theme.background,
+      titleColor: theme.text,
+
+      // text
+      appTitle: 'Ocean Professional Quiz',
+      cardTitle: 'Welcome',
+      cardBody: 'Test your knowledge. Press Start to begin.',
+      btnLabel: 'Start Quiz',
+    }
+  },
+
+  components() {
+    return { Card, Button }
+  },
+
+  onReady() {
+    const btn = this.$child('Button')
+    if (btn) {
+      btn.props.onPress = () => {
+        const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
+        if (r && r.navigate) {
+          r.navigate('/quiz')
+        }
+      }
+    }
   },
 })

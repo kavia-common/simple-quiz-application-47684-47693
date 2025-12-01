@@ -1,8 +1,11 @@
-import Blits from '@lightningjs/blits'
+import { start } from '@lightningjs/blits'
 import App from './App.js'
 
-Blits.Launch(App, 'app', {
-  w: 1920,
-  h: 1080,
-  debugLevel: 1,
+/**
+ * Start the Blits application with fixed canvas size.
+ */
+start(App, {
+  w: 1280,
+  h: 720,
+  canvas: { width: 1280, height: 720 },
 })
