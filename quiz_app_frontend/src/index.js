@@ -5,12 +5,20 @@ import App from './App.js'
 /**
  * Bootstraps the Blits application once the DOM is ready.
  * Ensures the app starts exactly once and uses canvas id "app".
- * Adds a small "OK" text at (20,20) to verify render loop.
+ * Adds a visible "BUILD ACTIVE" overlay to verify render loop.
  */
 function boot() {
   // Prevent double-start if DOMContentLoaded fires after immediate execution
   if (window.__blitsStarted) return
   window.__blitsStarted = true
+
+  console.log('[BLITS] boot() starting...')
+  const canvas = document.getElementById('app')
+  if (!canvas) {
+    console.error('[BLITS] Canvas #app not found!')
+  } else {
+    console.log('[BLITS] Found canvas #app', canvas.width, canvas.height)
+  }
 
   // Register a default font family if available; safe-guarded
   try {
@@ -33,18 +41,19 @@ function boot() {
     devicePixelRatio: 1,
   })
 
-  // One-frame debug draw to confirm the render loop
+  // Persistent overlay to confirm render loop
   if (app && typeof app.add === 'function') {
     app.add({
       type: 'Text',
-      x: 20,
-      y: 20,
-      text: 'OK',
-      fontSize: 20,
-      color: 0xff111827, // dark text
+      x: 40,
+      y: 40,
+      text: 'BUILD ACTIVE',
+      fontSize: 28,
+      color: 0xff2563eb, // primary blue
       alpha: 1,
     })
   }
+  console.log('[BLITS] boot() completed.')
 }
 
 // Ensure startup after DOM is ready exactly once

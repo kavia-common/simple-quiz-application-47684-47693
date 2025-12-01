@@ -4,19 +4,17 @@ import theme from '../theme.js'
 
 // PUBLIC_INTERFACE
 /**
- * Intro Page: shows title, subtitle, and Start/Help buttons.
- * Template is precompiler-safe (only $state refs).
+ * Intro Page: minimal, centered title/subtitle with two buttons and a tooltip.
+ * Attributes use explicit values from state (no inline expressions).
  */
 export default Blits.Component({
   template: `
     <Element w="1280" h="720" color="{bg}" alpha="1" focusable="false">
-      <Element x="{centerX}" y="{centerY}" w="{centerW}" h="{centerH}" color="{cardBg}" radius="{cardRadius}" alpha="1" focusable="false">
+      <Element x="{panelX}" y="{panelY}" w="{panelW}" h="{panelH}" color="{panelBg}" radius="{panelRadius}" alpha="1" focusable="false">
         <Text content="{title}" x="{titleX}" y="{titleY}" color="{titleColor}" fontSize="{titleSize}" />
         <Text content="{subtitle}" x="{subX}" y="{subY}" color="{subColor}" fontSize="{subSize}" />
-        <Element x="{rowX}" y="{rowY}" w="{rowW}" h="{rowH}" alpha="1" focusable="false">
-          <Button ref="start" x="{startX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{startLabel}" />
-          <Button ref="help"  x="{helpX}"  y="{btnY}" width="{btnW}" height="{btnH}" label="{helpLabel}" />
-        </Element>
+        <Button ref="start" x="{startX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{startLabel}" />
+        <Button ref="help"  x="{helpX}"  y="{btnY}" width="{btnW}" height="{btnH}" label="{helpLabel}" />
         <Element x="{tipX}" y="{tipY}" w="{tipW}" h="{tipH}" color="{tipBg}" alpha="{tipAlpha}" radius="{tipRadius}" focusable="false">
           <Text content="{tipText}" x="{tipTx}" y="{tipTy}" color="{tipFg}" fontSize="{tipSize}" />
         </Element>
@@ -24,43 +22,39 @@ export default Blits.Component({
     </Element>
   `,
   state() {
-    const centerW = 900
-    const centerH = 420
-    // compute centered positions without inline arithmetic in template
-    const centerX = (1280 - centerW) / 2 | 0
-    const centerY = (720 - centerH) / 2 | 0
+    // explicit values, precomputed
     return {
       bg: theme.background,
-      centerW: centerW,
-      centerH: centerH,
-      centerX: centerX,
-      centerY: centerY,
-      cardBg: '#ffffff',
-      cardRadius: 16,
+      panelW: 900,
+      panelH: 360,
+      panelX: 190, // (1280-900)/2
+      panelY: 180, // (720-360)/2
+      panelBg: '#ffffff',
+      panelRadius: 16,
+
       title: 'Simple Quiz',
-      subtitle: 'A quick set of questions to test your knowledge.',
-      titleX: 32,
-      titleY: 28,
+      titleX: 40,
+      titleY: 40,
       titleSize: 56,
       titleColor: theme.text,
-      subX: 32,
-      subY: 100,
+
+      subtitle: 'A quick set of questions to test your knowledge.',
+      subX: 40,
+      subY: 110,
       subSize: 26,
       subColor: '#374151',
-      rowX: 32,
-      rowY: 170,
-      rowW: 836,
-      rowH: 120,
+
       btnW: 260,
       btnH: 64,
-      btnY: 16,
-      startX: 140,
-      helpX: 440,
+      btnY: 180,
+      startX: 240,
+      helpX: 520,
       startLabel: 'Start Quiz',
       helpLabel: 'Help',
-      tipX: 32,
-      tipY: 300,
-      tipW: 836,
+
+      tipX: 40,
+      tipY: 260,
+      tipW: 820,
       tipH: 80,
       tipBg: '#eef2ff',
       tipFg: '#1f2937',
@@ -85,7 +79,7 @@ export default Blits.Component({
     }
     const showTip = () => {
       this.$state.tipAlpha = 1
-      setTimeout(() => { this.$state.tipAlpha = 0 }, 2000)
+      setTimeout(() => { this.$state.tipAlpha = 0 }, 1500)
     }
 
     if (startBtn) {
