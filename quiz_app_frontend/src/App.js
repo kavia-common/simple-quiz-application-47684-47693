@@ -29,6 +29,8 @@ export default Blits.App({
           { path: '/quiz', component: Quiz },
           { path: '/results', component: Results },
         ],
+        // Ensure navigation starts at Intro
+        initial: '/',
       }),
     }
   },
