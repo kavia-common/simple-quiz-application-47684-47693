@@ -1,49 +1,49 @@
-# lightningjs
+# Ocean Quiz (LightningJS + Blits)
 
-### lightningjs
+A simple multiple-choice quiz with an Ocean Professional theme. Supports keyboard/remote navigation (Up/Down/Enter), score tracking, and an optional backend fetch via VITE env variables.
 
+## Run
 
-Welcome to the _lightningjs_ Lightning 3 Blits App!
+- Install deps: `npm install`
+- Dev server: `npm run dev` (served on port 3000 via Vite config)
+- Production build: `npm run build`
 
-### Getting started
+## Screens
 
-Follow the steps below to get your Lightning 3 Blits App up and running in no time.
+- Intro (Home): Start Quiz
+- Quiz: 5–10 questions flow with progress, Next/Submit
+- Results: score and Restart option
 
-#### IDE setup
+## Keyboard/Remote
 
-It is highly recommended to install the Blits [VS-code extension](https://marketplace.visualstudio.com/items?itemName=LightningJS.lightning-blits) which will give you template highlighting and improved autocompletion.
+- Up/Down: navigate options
+- Enter: select/confirm
+- Back: go to previous screen (Intro from Quiz, Intro from Results via Back)
 
-#### Project setup
+## Theming
 
-Run the following command to install the dependencies of your App:
+- Located in `src/theme.js` using the Ocean Professional palette:
+  - primary #2563EB, secondary #F59E0B, success #F59E0B, error #EF4444
+  - background/surface/text styles, rounded corners and soft shadows
 
-```sh
-npm install
-```
+## Questions
 
-#### Build and run in development mode
+- By default, static questions are loaded from `src/quizData.js`.
+- If `VITE_API_BASE` or `VITE_BACKEND_URL` is set, the app will try to fetch from `${VITE_API_BASE || VITE_BACKEND_URL}/api/quiz`.
+- The expected API response shape: an array of objects `{ id, question, options: string[], answerIndex: number }`.
 
-Run your App in development mode:
+## Modifying questions
 
-```sh
-npm run dev
-```
+- Edit `src/quizData.js` to add/remove/change static questions.
+- To wire an API later, ensure your backend serves `/api/quiz` at the configured base and returns the format above.
 
-This command uses Vite to fire up a local server, with Hot Reloading support. Visit the provided link in your web browser to see the App in action.
+## Notes
 
-#### Build the App for production
-
-Create an optimized and minified version of your App:
-
-```sh
-npm run build
-```
-
-This will create a production version of the app in the `dist` folder.
-
+- No hard-coded ports in code; Vite dev server is set to 3000 in `vite.config.js`.
+- Source maps/feature flags can be controlled via existing `VITE_*` envs as needed.
 
 ### Resources
 
-- [Blits documentation](https://lightningjs.io/v3-docs/blits/getting_started/intro.html) - official documentation
-- [Blits Example App](https://blits-demo.lightningjs.io/?source=true) - a great reference to learn by example
-- [Blits Components](https://lightningjs.io/blits-components.html) - off-the-shelf, basic and performant reference components
+- [Blits documentation](https://lightningjs.io/v3-docs/blits/getting_started/intro.html)
+- [Blits Example App](https://blits-demo.lightningjs.io/?source=true)
+- [Blits Components](https://lightningjs.io/blits-components.html)

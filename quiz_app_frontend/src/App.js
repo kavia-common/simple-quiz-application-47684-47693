@@ -1,6 +1,7 @@
 import Blits from '@lightningjs/blits'
-
-import Home from './pages/Home.js'
+import Intro from './pages/Intro.js'
+import Quiz from './pages/Quiz.js'
+import Results from './pages/Results.js'
 
 export default Blits.Application({
   template: `
@@ -8,5 +9,9 @@ export default Blits.Application({
       <RouterView />
     </Element>
   `,
-  routes: [{ path: '/', component: Home }],
+  routes: [
+    { path: '/', component: Intro },
+    { path: '/quiz', component: Quiz },
+    { path: '/results', component: Results },
+  ],
 })
