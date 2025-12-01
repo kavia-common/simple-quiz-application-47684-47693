@@ -4,8 +4,8 @@ import theme from '../theme.js'
 
 // PUBLIC_INTERFACE
 /**
- * Intro Page: minimal, centered title/subtitle with two buttons and a tooltip.
- * Attributes use explicit values from state (no inline expressions).
+ * Intro Page: centered title/subtitle with Start and Help buttons.
+ * Buttons respond to click and Enter to navigate or show a tip.
  */
 export default Blits.Component({
   template: `
@@ -22,7 +22,7 @@ export default Blits.Component({
     </Element>
   `,
   state() {
-    // explicit values, precomputed
+    // Centered panel values
     return {
       bg: theme.background,
       panelW: 900,
