@@ -5,6 +5,7 @@ import Button from '../components/Button.js'
 
 /**
  * Quiz Page: displays a question with four options and a Next button.
+ * PUBLIC_INTERFACE
  */
 export default Blits.Component({
   template: `

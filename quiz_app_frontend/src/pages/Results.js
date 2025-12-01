@@ -4,6 +4,7 @@ import Button from '../components/Button.js'
 
 /**
  * Results Page: shows the score and a button to restart the quiz.
+ * PUBLIC_INTERFACE
  */
 export default Blits.Component({
   template: `

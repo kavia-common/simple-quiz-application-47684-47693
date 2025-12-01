@@ -77,17 +77,22 @@ export default Blits.Component({
   onReady() {
     const startBtn = this.$ref('start')
     const helpBtn = this.$ref('help')
+    const goQuiz = () => {
+      const r = Blits.Router?.getRouter?.()
+      if (r?.navigate) r.navigate('/quiz')
+    }
+    const showTip = () => {
+      this.$state.tipAlpha = 1
+      setTimeout(() => (this.$state.tipAlpha = 0), 2000)
+    }
     if (startBtn) {
-      startBtn.props.onPress = () => {
-        const r = Blits.Router?.getRouter?.()
-        if (r?.navigate) r.navigate('/quiz')
-      }
+      startBtn.props.onPress = goQuiz
     }
     if (helpBtn) {
-      helpBtn.props.onPress = () => {
-        this.$state.tipAlpha = 1
-        setTimeout(() => (this.$state.tipAlpha = 0), 2000)
-      }
+      helpBtn.props.onPress = showTip
     }
+    // Mouse click support fallback in case onPress not triggered
+    if (startBtn && !startBtn.onClick) startBtn.onClick = goQuiz
+    if (helpBtn && !helpBtn.onClick) helpBtn.onClick = showTip
   },
 })

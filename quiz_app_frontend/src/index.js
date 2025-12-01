@@ -36,8 +36,8 @@ function boot() {
       type: 'Text',
       x: 20,
       y: 20,
-      text: 'Rendering…',
-      fontSize: 18,
+      text: 'OK',
+      fontSize: 20,
       color: 0xff111827,
       alpha: 1,
     })
