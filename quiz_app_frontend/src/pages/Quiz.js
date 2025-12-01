@@ -16,43 +16,65 @@ export default Blits.Component('Quiz', {
       <Card>
         <Element>
           <!-- Loading -->
-          <Element x="80" y="120" :alpha="$loading ? 1 : 0">
+          <Element x="80" y="120" :alpha="$loadingAlpha">
             <Text size="40" color="${T.colors.text}" content="Loading questions..." />
             <Loader x="0" y="80" />
           </Element>
 
           <!-- Quiz content -->
-          <Element :alpha="$loading ? 0 : 1">
+          <Element :alpha="$contentAlpha">
             <Text x="80" y="80" size="28" color="${T.colors.muted}" :content="$progressText" />
 
             <Text x="80" y="140" size="42" color="${T.colors.text}" maxwidth="1040" :content="$questionText" />
 
-            <!-- Options -->
+            <!-- Options (explicit rows to avoid complex v-for patterns) -->
             <Element x="80" y="240">
-              <Element v-for="(opt, idx) in $options" :y="idx * 80"
-                w="1040" h="64"
-                :effects="[$shader('radius', {radius: 12})]"
-                :color="getOptionColor(idx)">
-                <Text x="24" y="32" mount="y:0.5" size="30"
-                  :color="getOptionTextColor(idx)"
-                  :content="String.fromCharCode(65 + idx) + '. ' + opt" />
+              <Element w="1040" h="64" :y="$y1" :effects="$optionEffects" :color="$bg1">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg1" :content="$label1" />
+              </Element>
+              <Element w="1040" h="64" :y="$y2" :effects="$optionEffects" :color="$bg2">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg2" :content="$label2" />
+              </Element>
+              <Element w="1040" h="64" :y="$y3" :effects="$optionEffects" :color="$bg3">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg3" :content="$label3" />
+              </Element>
+              <Element w="1040" h="64" :y="$y4" :effects="$optionEffects" :color="$bg4">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg4" :content="$label4" />
+              </Element>
+              <Element w="1040" h="64" :y="$y5" :effects="$optionEffects" :color="$bg5">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg5" :content="$label5" />
+              </Element>
+              <Element w="1040" h="64" :y="$y6" :effects="$optionEffects" :color="$bg6">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg6" :content="$label6" />
+              </Element>
+              <Element w="1040" h="64" :y="$y7" :effects="$optionEffects" :color="$bg7">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg7" :content="$label7" />
+              </Element>
+              <Element w="1040" h="64" :y="$y8" :effects="$optionEffects" :color="$bg8">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg8" :content="$label8" />
+              </Element>
+              <Element w="1040" h="64" :y="$y9" :effects="$optionEffects" :color="$bg9">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg9" :content="$label9" />
+              </Element>
+              <Element w="1040" h="64" :y="$y10" :effects="$optionEffects" :color="$bg10">
+                <Text x="24" y="32" mount="y:0.5" size="30" :color="$fg10" :content="$label10" />
               </Element>
             </Element>
 
             <!-- Next / Submit -->
             <Element x="80" y="520" w="260" h="80"
-              :effects="[$shader('radius', {radius: 14})]"
-              :alpha="$selectedIndex === null ? 0.5 : 1"
-              :color="$selectedIndex === null ? '${T.colors.text}1A' : '${T.colors.primary}'">
+              :effects="$ctaEffects"
+              :alpha="$ctaAlpha"
+              :color="$ctaBg">
               <Text x="24" y="40" mount="y:0.5" size="32"
-                :color="$selectedIndex === null ? '${T.colors.text}' : '${T.colors.surface}'"
+                :color="$ctaFg"
                 :content="$nextText" />
             </Element>
 
             <!-- Feedback -->
-            <Text x="360" y="560" :alpha="$showFeedback ? 1 : 0" size="28"
-              :color="$isCorrect ? '${T.colors.success}' : '${T.colors.error}'"
-              :content="$isCorrect ? 'Correct!' : 'Not quite. Keep going!'" />
+            <Text x="360" y="560" :alpha="$feedbackAlpha" size="28"
+              :color="$feedbackColor"
+              :content="$feedbackText" />
           </Element>
         </Element>
       </Card>
@@ -66,6 +88,10 @@ export default Blits.Component('Quiz', {
       selectedIndex: null,
       showFeedback: false,
       isCorrect: false,
+
+      // pre-defined effect holders to avoid inline arrays/objects
+      optionEffects: [],
+      ctaEffects: [],
     }
   },
   computed: {
@@ -92,6 +118,77 @@ export default Blits.Component('Quiz', {
     nextText() {
       return this.isLast ? 'Submit' : 'Next'
     },
+
+    // Alpha / CTA / feedback
+    loadingAlpha() {
+      return this.loading ? 1 : 0
+    },
+    contentAlpha() {
+      return this.loading ? 0 : 1
+    },
+    ctaAlpha() {
+      return this.selectedIndex === null ? 0.5 : 1
+    },
+    ctaBg() {
+      return this.selectedIndex === null ? T.colors.text + '1A' : T.colors.primary
+    },
+    ctaFg() {
+      return this.selectedIndex === null ? T.colors.text : T.colors.surface
+    },
+    feedbackAlpha() {
+      return this.showFeedback ? 1 : 0
+    },
+    feedbackColor() {
+      return this.isCorrect ? T.colors.success : T.colors.error
+    },
+    feedbackText() {
+      return this.isCorrect ? 'Correct!' : 'Not quite. Keep going!'
+    },
+
+    // Option rows (up to 10)
+    y1() { return 0 },
+    y2() { return this.options.length > 1 ? 80 : -9999 },
+    y3() { return this.options.length > 2 ? 160 : -9999 },
+    y4() { return this.options.length > 3 ? 240 : -9999 },
+    y5() { return this.options.length > 4 ? 320 : -9999 },
+    y6() { return this.options.length > 5 ? 400 : -9999 },
+    y7() { return this.options.length > 6 ? 480 : -9999 },
+    y8() { return this.options.length > 7 ? 560 : -9999 },
+    y9() { return this.options.length > 8 ? 640 : -9999 },
+    y10() { return this.options.length > 9 ? 720 : -9999 },
+
+    label1() { return this._labelFor(0) },
+    label2() { return this._labelFor(1) },
+    label3() { return this._labelFor(2) },
+    label4() { return this._labelFor(3) },
+    label5() { return this._labelFor(4) },
+    label6() { return this._labelFor(5) },
+    label7() { return this._labelFor(6) },
+    label8() { return this._labelFor(7) },
+    label9() { return this._labelFor(8) },
+    label10() { return this._labelFor(9) },
+
+    bg1() { return this._bgFor(0) },
+    bg2() { return this._bgFor(1) },
+    bg3() { return this._bgFor(2) },
+    bg4() { return this._bgFor(3) },
+    bg5() { return this._bgFor(4) },
+    bg6() { return this._bgFor(5) },
+    bg7() { return this._bgFor(6) },
+    bg8() { return this._bgFor(7) },
+    bg9() { return this._bgFor(8) },
+    bg10() { return this._bgFor(9) },
+
+    fg1() { return this._fgFor(0) },
+    fg2() { return this._fgFor(1) },
+    fg3() { return this._fgFor(2) },
+    fg4() { return this._fgFor(3) },
+    fg5() { return this._fgFor(4) },
+    fg6() { return this._fgFor(5) },
+    fg7() { return this._fgFor(6) },
+    fg8() { return this._fgFor(7) },
+    fg9() { return this._fgFor(8) },
+    fg10() { return this._fgFor(9) },
   },
   hooks: {
     async ready() {
@@ -100,22 +197,37 @@ export default Blits.Component('Quiz', {
       this.loading = false
       this.selectedIndex = null
       this.showFeedback = false
+
+      // initialize effects once in code, not in template
+      this.optionEffects = [this.$shader('radius', { radius: 12 })]
+      this.ctaEffects = [this.$shader('radius', { radius: 14 })]
     },
     focus() {
       if (this.selectedIndex === null) this.selectedIndex = 0
     },
   },
   methods: {
-    getOptionColor(idx) {
-      const sel = this.selectedIndex
-      if (sel === idx && this.showFeedback) {
-        return this.isCorrect ? T.colors.success : T.colors.error
-      }
-      return sel === idx ? T.colors.primary + '33' : T.colors.text + '0D'
+    _labelFor(i) {
+      const opt = this.options[i]
+      if (typeof opt === 'undefined') return ''
+      return String.fromCharCode(65 + i) + '. ' + String(opt)
     },
-    getOptionTextColor(idx) {
+    _bgFor(i) {
+      if (i >= this.options.length) return 'transparent'
       const sel = this.selectedIndex
-      if (sel === idx && this.showFeedback) {
+      const show = this.showFeedback
+      if (sel === i && show) {
+        return this.isCorrect ? T.colors.success : T.colors.error
+      } else if (sel === i) {
+        return T.colors.primary + '33'
+      }
+      return T.colors.text + '0D'
+    },
+    _fgFor(i) {
+      if (i >= this.options.length) return 'transparent'
+      const sel = this.selectedIndex
+      const show = this.showFeedback
+      if (sel === i && show) {
         return T.colors.surface
       }
       return T.colors.text

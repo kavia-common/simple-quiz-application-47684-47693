@@ -1,5 +1,4 @@
 import Blits from '@lightningjs/blits'
-import { OceanTheme as T } from '../theme.js'
 
 export default Blits.Component('Intro', {
   template: `
