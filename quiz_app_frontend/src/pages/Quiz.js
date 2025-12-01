@@ -12,7 +12,7 @@ export default Blits.Component({
     <Element w="100%" h="100%" color="{bg}" alpha="1">
       <Text content="{questionText}" x="{qX}" y="{qY}" color="{titleColor}" fontSize="{qSize}" />
 
-      <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}">
+      <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}" alpha="1">
         <Element y="{row0Y}" w="{listW}" h="{rowH}" color="{opt1Bg}" focusable="true">
           <Text content="{opt1}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
         </Element>

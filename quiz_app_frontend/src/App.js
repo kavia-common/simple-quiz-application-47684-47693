@@ -10,11 +10,9 @@ import theme from './theme.js'
  */
 export default Blits.App({
   template: `
-    <Element w="100%" h="100%" color="{bg}">
-      <!-- Temporary debug overlay -->
-      <Element x="0" y="0" w="300" h="40" color="#000000">
-        <Text content="{hello}" x="8" y="8" color="#ffffff" fontSize="22" />
-      </Element>
+    <Element w="100%" h="100%" color="{bg}" alpha="1">
+      <!-- Temporary debug overlay to confirm draw -->
+      <Text content="{hello}" x="20" y="20" color="#ffffff" fontSize="22" />
       <Router />
     </Element>
   `,
