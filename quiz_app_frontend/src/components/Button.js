@@ -13,13 +13,11 @@ export default Blits.Component({
     height: 56,
     onPress: null,
   },
-
   template: `
-    <Element w="{w}" h="{h}" color="{bg}" radius="{radius}" focusable="true">
+    <Element w="{w}" h="{h}" color="{bg}" alpha="1" radius="{radius}" focusable="true">
       <Text content="{text}" color="{fg}" fontSize="{fontSize}" x="{tx}" y="{ty}" />
     </Element>
   `,
-
   state() {
     return {
       text: '',
@@ -34,7 +32,6 @@ export default Blits.Component({
       cb: null,
     }
   },
-
   onInit() {
     if (this.props) {
       if (this.props.label) this.$state.text = this.props.label
@@ -43,18 +40,12 @@ export default Blits.Component({
       if (this.props.onPress) this.$state.cb = this.props.onPress
     }
   },
-
   onEnter() {
     const fn = this.$state.cb
-    if (fn) {
-      fn()
-    }
+    if (fn) fn()
   },
-
   onClick() {
     const fn = this.$state.cb
-    if (fn) {
-      fn()
-    }
+    if (fn) fn()
   },
 })

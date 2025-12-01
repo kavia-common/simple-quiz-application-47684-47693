@@ -12,14 +12,12 @@ export default Blits.Component({
     width: 800,
     height: 360,
   },
-
   template: `
-    <Element w="{w}" h="{h}" color="{bg}" radius="{radius}">
+    <Element w="{w}" h="{h}" color="{bg}" alpha="1" radius="{radius}">
       <Text content="{titleText}" color="{titleColor}" fontSize="{titleSize}" x="{pad}" y="{pad}" />
       <Text content="{bodyText}" color="{bodyColor}" fontSize="{bodySize}" x="{pad}" y="{bodyY}" />
     </Element>
   `,
-
   state() {
     return {
       w: 800,
@@ -36,7 +34,6 @@ export default Blits.Component({
       bodyY: 92,
     }
   },
-
   onInit() {
     if (this.props) {
       if (this.props.width !== undefined) this.$state.w = this.props.width

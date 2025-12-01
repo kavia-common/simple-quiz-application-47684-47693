@@ -1,41 +1,61 @@
 import Blits from '@lightningjs/blits'
 import App from './App.js'
 
-/**
- * Start the Blits application with fixed canvas size and explicit renderer config.
- * Using default import and Blits.start to match package exports.
- */
 // PUBLIC_INTERFACE
+/**
+ * Bootstraps the Blits application once the DOM is ready.
+ * - Matches Blits v1 API: Blits.start(App, { canvasId, w, h, devicePixelRatio })
+ * - Ensures canvas with id="app" is used
+ * - Adds a tiny debug label to verify the render loop (can be removed later)
+ */
 function boot() {
-  // Register a default font family (system sans) to ensure Text nodes render reliably.
-  // If custom fonts are needed, they can be added via Blits.fonts.register.
-  if (Blits && Blits.fonts && typeof Blits.fonts.register === 'function') {
-    try {
+  try {
+    // Optional: register a default font family; safe no-op if unavailable
+    if (Blits?.fonts?.register) {
       Blits.fonts.register('Default', {
         family:
           'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial',
       })
       Blits.fonts.default = 'Default'
-    } catch (e) {
-      // non-fatal
-      console.warn('Font registration skipped:', e)
     }
+  } catch (e) {
+    console.warn('Font registration skipped:', e)
   }
 
-  Blits.start(App, {
+  // Start the app
+  const app = Blits.start(App, {
+    canvasId: 'app',
     w: 1280,
     h: 720,
-    // Ensure the correct canvas is used and sized
-    canvasId: 'app',
-    canvas: { width: 1280, height: 720 },
-    // Renderer hints: keep pixel ratio at 1 to avoid scaling blur in CI/preview
-    rendererOptions: { devicePixelRatio: 1 },
+    devicePixelRatio: 1,
   })
+
+  // Temporary debug label to confirm first render
+  if (app && typeof app.add === 'function') {
+    app.add({
+      type: 'Text',
+      x: 20,
+      y: 20,
+      text: 'Rendering…',
+      fontSize: 18,
+      color: 0xff111827,
+      alpha: 1,
+    })
+    // Remove the debug label after a short delay
+    setTimeout(() => {
+      try {
+        const c = app.children?.[app.children.length - 1]
+        if (c && c.remove) c.remove()
+      } catch (_) {
+        /* ignore */
+      }
+    }, 1500)
+  }
 }
 
-// Start after DOM is ready, or immediately if already loaded
+// Ensure startup after DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => boot())
+  document.addEventListener('DOMContentLoaded', boot)
 } else {
   boot()
 }

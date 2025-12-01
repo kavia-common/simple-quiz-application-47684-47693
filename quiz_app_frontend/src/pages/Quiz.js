@@ -4,14 +4,12 @@ import quiz from '../quizData.js'
 import Button from '../components/Button.js'
 
 /**
- * Quiz Page: Displays one question with 4 options. Selection highlights the row.
- * Next advances questions, then navigates to Results with score in route state.
+ * Quiz Page: displays a question with four options and a Next button.
  */
 export default Blits.Component({
   template: `
-    <Element w="100%" h="100%" color="{bg}" alpha="1">
+    <Element w="1280" h="720" color="{bg}" alpha="1">
       <Text content="{questionText}" x="{qX}" y="{qY}" color="{titleColor}" fontSize="{qSize}" />
-
       <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}" alpha="1">
         <Element y="{row0Y}" w="{listW}" h="{rowH}" color="{opt1Bg}" focusable="true">
           <Text content="{opt1}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
@@ -26,53 +24,40 @@ export default Blits.Component({
           <Text content="{opt4}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
         </Element>
       </Element>
-
       <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{nextLabel}" />
     </Element>
   `,
-
   state() {
     return {
-      // layout
       qX: 160, qY: 120, qSize: 36,
       listX: 160, listY: 220, listW: 1000, listH: 320,
       rowH: 64,
       row0Y: 0, row1Y: 80, row2Y: 160, row3Y: 240,
       txtX: 24, txtY: 18, optSize: 24,
       btnX: 160, btnY: 580, btnW: 200, btnH: 64,
-
-      // theme
       bg: theme.background,
       titleColor: theme.text,
       optColor: theme.text,
       primary: theme.primary,
       surface: theme.surface,
-
-      // quiz state
       idx: 0,
       selected: -1,
       score: 0,
-
-      // text
       questionText: '',
       opt1: '',
       opt2: '',
       opt3: '',
       opt4: '',
       nextLabel: 'Next',
-
-      // option backgrounds
       opt1Bg: theme.surface,
       opt2Bg: theme.surface,
       opt3Bg: theme.surface,
       opt4Bg: theme.surface,
     }
   },
-
   components() {
     return { Button }
   },
-
   methods: {
     // PUBLIC_INTERFACE
     load() {
@@ -82,13 +67,13 @@ export default Blits.Component({
       this.$state.opt2 = q.options[1]
       this.$state.opt3 = q.options[2]
       this.$state.opt4 = q.options[3]
-      this.$state.opt1Bg = this.$state.surface
-      this.$state.opt2Bg = this.$state.surface
-      this.$state.opt3Bg = this.$state.surface
-      this.$state.opt4Bg = this.$state.surface
+      const s = this.$state.surface
+      this.$state.opt1Bg = s
+      this.$state.opt2Bg = s
+      this.$state.opt3Bg = s
+      this.$state.opt4Bg = s
       this.$state.selected = -1
     },
-
     // PUBLIC_INTERFACE
     select(i) {
       this.$state.selected = i
@@ -99,7 +84,6 @@ export default Blits.Component({
       this.$state.opt3Bg = i === 2 ? p : s
       this.$state.opt4Bg = i === 3 ? p : s
     },
-
     // PUBLIC_INTERFACE
     next() {
       const current = quiz[this.$state.idx]
@@ -108,8 +92,8 @@ export default Blits.Component({
       }
       const nextIdx = this.$state.idx + 1
       if (nextIdx >= quiz.length) {
-        const r = Blits.Router && Blits.Router.getRouter ? Blits.Router.getRouter() : null
-        if (r && r.navigate) {
+        const r = Blits.Router?.getRouter?.()
+        if (r?.navigate) {
           r.navigate('/results', { state: { score: this.$state.score, total: quiz.length } })
         }
       } else {
@@ -118,16 +102,15 @@ export default Blits.Component({
       }
     },
   },
-
   onInit() {
     this.methods.load()
   },
-
   onReady() {
     const btn = this.$child('Button')
     if (btn) {
       btn.props.onPress = this.methods.next
     }
+    // attach Enter handlers for option rows
     const list = this.$childAt(1)
     if (list) {
       const r0 = list.childAt(0)
