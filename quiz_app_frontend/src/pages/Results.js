@@ -8,7 +8,7 @@ import Button from '../components/Button.js'
  */
 export default Blits.Component({
   template: `
-    <Element w="1280" h="720" color="{bg}" alpha="1">
+    <Element w="1280" h="720" color="{bg}" alpha="1" focusable="false">
       <Text content="{title}" x="{titleX}" y="{titleY}" color="{titleColor}" fontSize="{titleSize}" />
       <Text content="{scoreText}" x="{scoreX}" y="{scoreY}" color="{titleColor}" fontSize="{scoreSize}" />
       <Button x="{btnX}" y="{btnY}" width="{btnW}" height="{btnH}" label="{btnLabel}" />
@@ -31,8 +31,10 @@ export default Blits.Component({
   },
   onInit() {
     let s = { score: 0, total: 0 }
-    const r = Blits.Router?.getRouter?.()
-    if (r?.getState) {
+    const r = (Blits && Blits.Router && typeof Blits.Router.getRouter === 'function')
+      ? Blits.Router.getRouter()
+      : null
+    if (r && typeof r.getState === 'function') {
       const st = r.getState()
       if (st && st.state) {
         s = st.state
@@ -44,8 +46,10 @@ export default Blits.Component({
     const btn = this.$child('Button')
     if (btn) {
       btn.props.onPress = () => {
-        const r = Blits.Router?.getRouter?.()
-        if (r?.navigate) {
+        const r = (Blits && Blits.Router && typeof Blits.Router.getRouter === 'function')
+          ? Blits.Router.getRouter()
+          : null
+        if (r && typeof r.navigate === 'function') {
           r.navigate('/')
         }
       }

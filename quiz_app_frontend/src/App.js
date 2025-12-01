@@ -15,10 +15,12 @@ Returns: A Blits App component which renders a solid background and the Router w
 export default Blits.App({
   template: `
     <Element w="1280" h="720" color="{bg}" alpha="1" focusable="false">
+      <!-- Simple soft stripes background -->
       <Element y="{row0Y}" w="1280" h="{rowH}" color="{grad1}" alpha="1" />
       <Element y="{row1Y}" w="1280" h="{rowH}" color="{grad2}" alpha="1" />
       <Element y="{row2Y}" w="1280" h="{rowH}" color="{grad3}" alpha="1" />
       <Element y="{row3Y}" w="1280" h="{rowH}" color="{grad4}" alpha="1" />
+      <!-- Router sits above background -->
       <Router />
     </Element>
   `,

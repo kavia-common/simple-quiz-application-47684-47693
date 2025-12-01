@@ -9,9 +9,9 @@ import Button from '../components/Button.js'
  */
 export default Blits.Component({
   template: `
-    <Element w="1280" h="720" color="{bg}" alpha="1">
+    <Element w="1280" h="720" color="{bg}" alpha="1" focusable="false">
       <Text content="{questionText}" x="{qX}" y="{qY}" color="{titleColor}" fontSize="{qSize}" />
-      <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}" alpha="1">
+      <Element x="{listX}" y="{listY}" w="{listW}" h="{listH}" alpha="1" focusable="false">
         <Element y="{row0Y}" w="{listW}" h="{rowH}" color="{opt1Bg}" focusable="true">
           <Text content="{opt1}" x="{txtX}" y="{txtY}" color="{optColor}" fontSize="{optSize}" />
         </Element>
@@ -93,8 +93,10 @@ export default Blits.Component({
       }
       const nextIdx = this.$state.idx + 1
       if (nextIdx >= quiz.length) {
-        const r = Blits.Router?.getRouter?.()
-        if (r?.navigate) {
+        const r = (Blits && Blits.Router && typeof Blits.Router.getRouter === 'function')
+          ? Blits.Router.getRouter()
+          : null
+        if (r && typeof r.navigate === 'function') {
           r.navigate('/results', { state: { score: this.$state.score, total: quiz.length } })
         }
       } else {

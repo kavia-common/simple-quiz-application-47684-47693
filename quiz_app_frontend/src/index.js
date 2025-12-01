@@ -12,6 +12,7 @@ function boot() {
   if (window.__blitsStarted) return
   window.__blitsStarted = true
 
+  // Register a default font family if available; safe-guarded
   try {
     if (Blits && Blits.fonts && typeof Blits.fonts.register === 'function') {
       Blits.fonts.register('Default', {
@@ -24,6 +25,7 @@ function boot() {
     console.warn('Font registration skipped:', e)
   }
 
+  // Start app with the specific canvas id and fixed dimensions
   const app = Blits.start(App, {
     canvasId: 'app',
     w: 1280,
@@ -31,6 +33,7 @@ function boot() {
     devicePixelRatio: 1,
   })
 
+  // One-frame debug draw to confirm the render loop
   if (app && typeof app.add === 'function') {
     app.add({
       type: 'Text',
@@ -38,7 +41,7 @@ function boot() {
       y: 20,
       text: 'OK',
       fontSize: 20,
-      color: 0xff111827,
+      color: 0xff111827, // dark text
       alpha: 1,
     })
   }
