@@ -26,14 +26,15 @@ export default Blits.Component({
   state() {
     const centerW = 900
     const centerH = 420
-    const centerX = Math.round((1280 - centerW) / 2)
-    const centerY = Math.round((720 - centerH) / 2)
+    // compute centered positions without inline arithmetic in template
+    const centerX = (1280 - centerW) / 2 | 0
+    const centerY = (720 - centerH) / 2 | 0
     return {
       bg: theme.background,
-      centerW,
-      centerH,
-      centerX,
-      centerY,
+      centerW: centerW,
+      centerH: centerH,
+      centerX: centerX,
+      centerY: centerY,
       cardBg: '#ffffff',
       cardRadius: 16,
       title: 'Simple Quiz',
@@ -77,22 +78,23 @@ export default Blits.Component({
   onReady() {
     const startBtn = this.$ref('start')
     const helpBtn = this.$ref('help')
+
     const goQuiz = () => {
-      const r = Blits.Router?.getRouter?.()
-      if (r?.navigate) r.navigate('/quiz')
+      const r = Blits.Router && typeof Blits.Router.getRouter === 'function' ? Blits.Router.getRouter() : null
+      if (r && typeof r.navigate === 'function') r.navigate('/quiz')
     }
     const showTip = () => {
       this.$state.tipAlpha = 1
-      setTimeout(() => (this.$state.tipAlpha = 0), 2000)
+      setTimeout(() => { this.$state.tipAlpha = 0 }, 2000)
     }
+
     if (startBtn) {
       startBtn.props.onPress = goQuiz
+      startBtn.onClick = goQuiz
     }
     if (helpBtn) {
       helpBtn.props.onPress = showTip
+      helpBtn.onClick = showTip
     }
-    // Mouse click support fallback in case onPress not triggered
-    if (startBtn && !startBtn.onClick) startBtn.onClick = goQuiz
-    if (helpBtn && !helpBtn.onClick) helpBtn.onClick = showTip
   },
 })

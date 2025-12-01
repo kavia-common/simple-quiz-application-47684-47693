@@ -4,17 +4,19 @@ import App from './App.js'
 // PUBLIC_INTERFACE
 /**
  * Bootstraps the Blits application once the DOM is ready.
- * - Matches Blits v1 API: Blits.start(App, { canvasId, w, h, devicePixelRatio })
- * - Ensures canvas with id="app" is used
- * - Adds a tiny debug label to verify the render loop (can be removed later)
+ * Ensures the app starts exactly once and uses canvas id "app".
+ * Adds a small "OK" text at (20,20) to verify render loop.
  */
 function boot() {
+  // Prevent double-start if DOMContentLoaded fires after immediate execution
+  if (window.__blitsStarted) return
+  window.__blitsStarted = true
+
   try {
-    // Optional: register a default font family; safe no-op if unavailable
-    if (Blits?.fonts?.register) {
+    if (Blits && Blits.fonts && typeof Blits.fonts.register === 'function') {
       Blits.fonts.register('Default', {
         family:
-          'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial',
+          'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", Arial',
       })
       Blits.fonts.default = 'Default'
     }
@@ -22,7 +24,6 @@ function boot() {
     console.warn('Font registration skipped:', e)
   }
 
-  // Start the app
   const app = Blits.start(App, {
     canvasId: 'app',
     w: 1280,
@@ -30,7 +31,6 @@ function boot() {
     devicePixelRatio: 1,
   })
 
-  // Temporary debug label to confirm first render
   if (app && typeof app.add === 'function') {
     app.add({
       type: 'Text',
@@ -41,21 +41,12 @@ function boot() {
       color: 0xff111827,
       alpha: 1,
     })
-    // Remove the debug label after a short delay
-    setTimeout(() => {
-      try {
-        const c = app.children?.[app.children.length - 1]
-        if (c && c.remove) c.remove()
-      } catch (_) {
-        /* ignore */
-      }
-    }, 1500)
   }
 }
 
-// Ensure startup after DOM is ready
+// Ensure startup after DOM is ready exactly once
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot)
+  document.addEventListener('DOMContentLoaded', boot, { once: true })
 } else {
   boot()
 }
